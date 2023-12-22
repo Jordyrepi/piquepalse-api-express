@@ -4,13 +4,14 @@
 // kalau ada langsung return await / username telah digunakan
 // kalau tidak ada yang menggunakan email/username tersebut create
 // ke database
+import { hashPassword } from "../../helper/bcrypt";
 import { createUser } from "../../repositories/users/createUser";
 import { findUserByEmailAndUsername } from "../../repositories/users/findUsersByEmailAndUsername";
 import { Iuser } from "../../types/user.type";
 
 export const registerUserAction = async (data: Iuser) => {
   try {
-    const { email, username } = data;
+    const { email, username, password } = data;
     const users = await findUserByEmailAndUsername(email, username);
 
     if (users.length) {
@@ -19,7 +20,9 @@ export const registerUserAction = async (data: Iuser) => {
         message: "Email or Username already exsist",
       };
     }
-
+    //hashing untuk password
+    const hashedPassword = await hashPassword(password);
+    data.password = hashedPassword;
     // create user di database
     await createUser(data);
 
