@@ -5,6 +5,8 @@
 // kalau datanya ada selanjutnya dicek passwowrd yang  ada di database dengan password yang dimasukkan
 // oleh user  (req.body)
 
+import { comparePassword } from "../../helper/bcrypt";
+import { excludeFields } from "../../helper/excludeFields";
 import { findUserByEmail } from "../../repositories/users/findUserByEmail";
 import { findUserByUsername } from "../../repositories/users/findUserByUsername";
 
@@ -41,18 +43,22 @@ export const loginUserAction = async (
       };
     }
 
+    const isPasswordValid = await comparePassword(pasword, user.password);
+
     // Mengecek passworwd yang di input user sama dengan password dari database
-    if (user.password !== pasword) {
+    if (!isPasswordValid) {
       return {
         status: 400,
         message: "Invalid credentials",
       };
     }
 
+    const dataWtihoutPassword = excludeFields(user, ["password"]);
+
     return {
       status: 200,
       message: "login succes",
-      data: user,
+      data: dataWtihoutPassword,
     };
   } catch (error) {
     console.log(error);
