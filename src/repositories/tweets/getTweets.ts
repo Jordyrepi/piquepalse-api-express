@@ -3,6 +3,10 @@ import { prisma } from "../../helper/prisma";
 export const getTweet = async () => {
   try {
     const tweets = await prisma.tweets.findMany({
+      // untuk sorting tweet
+      orderBy: {
+        id: "desc",
+      },
       include: {
         User: {
           select: {

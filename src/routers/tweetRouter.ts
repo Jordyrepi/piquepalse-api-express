@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.post("/createdtweet", createdTweetController);
 router.get("/gettweets", getTweetController);
+
+
 router.get("/:id", getTweetByUserController);
 router.delete("/:id", deleteTweetController);
 router.patch("/:id", editTweetController);
